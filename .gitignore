@@ -1,5 +1,2 @@
-*.pyc
-*.swp
-*~
-papers.bib
-test-blog
+*.egg-info
+__pycache__
