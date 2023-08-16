@@ -7,9 +7,9 @@ A Pelican plugin that provices a LaTeX-like system for referencing figure
 elements within an article or page. Figures whose figcaption elements begin
 with the format
 
-    labelname :: caption text
+    labelname || caption text
 
-will have `labelname ::` replaced by figure numbering. This figure can
+will have `labelname ||` replaced by figure numbering. This figure can
 be referenced with the syntax {#labelname}, which will be replaced by
 the figure number. The figure number will provide a link to the figure.
 """
@@ -28,8 +28,9 @@ if (sys.version_info[0]>2):
 
 __version__ = '0.0.1'
 
+DELIMITER="||"
 REF_RE = re.compile("\{#\s*(\w+)\s*\}")
-LABEL_RE = re.compile("^\s*(\w+)\s*::")
+LABEL_RE = re.compile("^\s*(\w+)\s*||")
 REF = "<a href='#figref-{}'>{}</a>"
 LABEL = "<strong>Figure {}:</strong> "
 
@@ -46,7 +47,7 @@ def process_content(article):
     
     # Get figures and number them
     figlist = []
-    for fig in soup.find_all('figcaption'):
+    for fig in soup.find_all('p','caption'):
         caption = unicode(fig.string)
         m = LABEL_RE.search(caption)
         if m:
