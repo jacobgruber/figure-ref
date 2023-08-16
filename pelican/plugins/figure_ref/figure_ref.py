@@ -31,7 +31,7 @@ __version__ = '0.0.1'
 DELIMITER="||"
 REF_RE = re.compile("\{#\s*(\w+)\s*\}")
 LABEL_RE = re.compile("^\s*(\w+)\s*||")
-REF = "<a href='#figref-{}'>{}</a>"
+REF = "<a href='#figref-{}'>Figure {}</a>"
 LABEL = "<strong>Figure {}:</strong> "
 
 logger = logging.getLogger(__name__)
