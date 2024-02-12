@@ -94,6 +94,6 @@ def add_figure_refs(generators):
 
 
 def register():
-    signals.initialized.connect(check_settings)
+    signals.initialized.connect(initialize_settings)
     signals.all_generators_finalized.connect(add_figure_refs)
 
