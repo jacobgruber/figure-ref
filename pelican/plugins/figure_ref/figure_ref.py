@@ -29,9 +29,8 @@ if (sys.version_info[0]>2):
 __version__ = '0.0.1'
 
 FIG_REF_SETTINGS = dict(
-    DELIMITER="||",
+    DELIMETER="||",
     REF_RE = re.compile("\{#\s*(\w+)\s*\}"),
-    LABEL_RE = re.compile("^\s*(\w+)\s*||"),
     REF = "<a href='#figref-{}'>Figure {}</a>",
     LABEL = "<strong>Figure {}:</strong> ",
 )
@@ -43,8 +42,10 @@ def initialize_settings(pelican):
     Try to find settings from pelicanconf and compute derived values
     """
 
-    test = pelican.settings.get('FIG_REF_SETTNGS', {})
-    console.log(test)
+    conf_settings = pelican.settings.get('FIG_REF_SETTNGS', {})
+    FIG_REF_SETTINGS.update(conf_settings)
+
+    FIG_REF_SETTINGS['LABEL_RE'] = re.compile("^\s*(\w+)\s*{}".format(re.escape(FIG_REF_SETTINGS['DELIMETER'])))
 
     pass
 
@@ -65,8 +66,9 @@ def process_content(article):
         if m:
             figlist.append(m.group(1))
             fig.parent['id'] = 'figref-' + m.group(1)
-            new_tag = soup.new_tag("strong")
             fig.string.replace_with(' ' + caption[m.end():])
+            logger.info(f"fig-ref: found figure tag {m.group(1)}")
+            new_tag = soup.new_tag("strong")
             new_tag.string = "Figure {}:".format(len(figlist))
             fig.insert(0,new_tag)
     
