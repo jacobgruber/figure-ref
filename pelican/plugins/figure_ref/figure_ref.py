@@ -29,7 +29,7 @@ if (sys.version_info[0]>2):
 __version__ = '0.0.1'
 
 FIG_REF_SETTINGS = dict(
-    DELIMETER="||",
+    DELIMETER="::",
     REF_RE = re.compile("\{#\s*(\w+)\s*\}"),
     REF = "<a href='#figref-{}'>Figure {}</a>",
     LABEL = "<strong>Figure {}:</strong> ",
@@ -42,7 +42,7 @@ def initialize_settings(pelican):
     Try to find settings from pelicanconf and compute derived values
     """
 
-    conf_settings = pelican.settings.get('FIG_REF_SETTNGS', {})
+    conf_settings = pelican.settings.get('FIG_REF_SETTINGS', {})
     FIG_REF_SETTINGS.update(conf_settings)
 
     FIG_REF_SETTINGS['LABEL_RE'] = re.compile("^\s*(\w+)\s*{}".format(re.escape(FIG_REF_SETTINGS['DELIMETER'])))
