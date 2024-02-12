@@ -28,13 +28,25 @@ if (sys.version_info[0]>2):
 
 __version__ = '0.0.1'
 
-DELIMITER="||"
-REF_RE = re.compile("\{#\s*(\w+)\s*\}")
-LABEL_RE = re.compile("^\s*(\w+)\s*||")
-REF = "<a href='#figref-{}'>Figure {}</a>"
-LABEL = "<strong>Figure {}:</strong> "
+FIG_REF_SETTINGS = dict(
+    DELIMITER="||",
+    REF_RE = re.compile("\{#\s*(\w+)\s*\}"),
+    LABEL_RE = re.compile("^\s*(\w+)\s*||"),
+    REF = "<a href='#figref-{}'>Figure {}</a>",
+    LABEL = "<strong>Figure {}:</strong> ",
+)
 
 logger = logging.getLogger(__name__)
+
+def initialize_settings():
+    """
+    Try to find settings from pelicanconf and compute derived values
+    """
+
+    test = pelican.settings.get('FIG_REF_SETTNGS', {})
+    console.log(test)
+
+    pass
 
 def process_content(article):
     """
@@ -49,7 +61,7 @@ def process_content(article):
     figlist = []
     for fig in soup.find_all('p','caption'):
         caption = unicode(fig.string)
-        m = LABEL_RE.search(caption)
+        m = FIG_REF_SETTINGS['LABEL_RE'].search(caption)
         if m:
             figlist.append(m.group(1))
             fig.parent['id'] = 'figref-' + m.group(1)
@@ -65,10 +77,9 @@ def process_content(article):
         except ValueError:
             logger.warn('`figure_ref` unable to find figure with label "{}" in file {}'.format(match.group(1), article.source_path))
             return match.string
-        return REF.format(match.group(1),num)
+        return FIG_REF_SETTINGS['REF'].format(match.group(1),num)
         
-    article._content = REF_RE.sub(substitute, unicode(soup))
-
+    article._content = FIG_REF_SETTINGS['REF_RE'].sub(substitute, unicode(soup))
 
 
 def add_figure_refs(generators):
@@ -82,6 +93,7 @@ def add_figure_refs(generators):
                 process_content(page)
 
 
-
 def register():
+    signals.initialized.connect(check_settings)
     signals.all_generators_finalized.connect(add_figure_refs)
+
