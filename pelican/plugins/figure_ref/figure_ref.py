@@ -38,7 +38,7 @@ FIG_REF_SETTINGS = dict(
 
 logger = logging.getLogger(__name__)
 
-def initialize_settings():
+def initialize_settings(pelican):
     """
     Try to find settings from pelicanconf and compute derived values
     """
